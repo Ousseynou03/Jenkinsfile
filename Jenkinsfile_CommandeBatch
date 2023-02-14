@@ -1,0 +1,20 @@
+pipeline {
+  agent any
+  stages {
+    stage('Build') {
+      steps {
+        // Cloner le repository depuis GitHub
+        git 'https://github.com/votre_nom_utilisateur/mon_projet.git'
+        // Installer les dépendances du projet
+        sh 'pip install -r requirements.txt'
+      }
+    }
+    stage('Test') {
+      steps {
+        // Exécuter les tests à l'aide de la commande batch fournie
+        sh 'robot --variable browser:Chrome --output Report_Chrome/output-chrome.xml --log Report_Chrome/log-chrome.html --report Report_Chrome/report-chrome.html mon_espace_commercial.robot'
+      }
+    }
+  }
+}
+

@@ -1,0 +1,35 @@
+pipeline {
+  agent any
+  stages {
+    stage('Build') {
+      steps {
+        // Cloner le repository depuis GitHub
+        git 'https://github.com/votre_nom_utilisateur/mon_projet.git'
+        // Installer les dépendances du projet
+        sh 'pip install -r requirements.txt'
+      }
+    }
+    stage('Test') {
+      steps {
+        // Exécuter les tests à l'aide de la commande "robot -d Results Tests"
+        sh 'robot -d Results Tests'
+      }
+      post {
+        always {
+          // Archiver les résultats des tests
+          archiveArtifacts 'Results/**'
+          // Publier un rapport de test à partir des sorties de Robot Framework
+          robotPublisher(
+            outputPath: 'Results',
+            outputFileName: 'output.xml',
+            reportFileName: 'report.html',
+            logFileName: 'log.html',
+            passThreshold: 90,
+            unstableThreshold: 70
+          )
+        }
+      }
+    }
+  }
+}
+
